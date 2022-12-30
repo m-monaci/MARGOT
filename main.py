@@ -4,17 +4,17 @@ import os.path
 import pandas as pd
 
 path = ''
-folder = "Results_MARGOT/"
+folder = "results_margot/"
 if not os.path.isdir(folder):
     os.mkdir(folder)
 path = ''+folder
 
-folder_plots = "Plots/"
+folder_plots = "plots/"
 if not os.path.isdir(path + folder_plots):
     os.mkdir(path + folder_plots)
 path_plots = path + folder_plots
 
-date = '29Dic'
+date = '' #insert the date
 datasets = ['breast_cancer_diagnostic','breast_cancer_wisconsin'] #,'climate_model','cleveland','ionosphere','parkinsons','sonar','spectf','tic_tac_toe','wholesale']
 
 D = 2
@@ -74,7 +74,7 @@ for i in range(len(datasets)):
 
         df_new = pd.DataFrame(row, columns = columns)
         df_tot = pd.concat([df_tot,df_new])
-        df_tot.to_excel(path + 'Stats_' + 'Margot_' + str(date) + '.xlsx', index = False, header = True)
+        df_tot.to_excel(path + 'stats_margot_.xlsx', index = False, header = True)
 
         print('TOTAL TIME OPT: ' + str(time_opt + time_ws))
         print('ACC TRAIN', acc_train)
