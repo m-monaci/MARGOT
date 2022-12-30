@@ -1,0 +1,25 @@
+requirements
+
+Name: numpy
+Version: 1.22.3
+
+Name: pandas
+Version: 1.4.2
+
+Name: openpyxl
+Version: 3.0.10
+
+Name: pygraphviz
+Version: 1.9
+
+Name: gurobipy
+Version: 9.5.1
+
+Name: matplotlib
+Version: 3.5.1
+
+Name: scikit-learn
+Version: 1.0.2
+
+Name: xlsxwriter
+Version: 3.0.3
