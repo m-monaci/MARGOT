@@ -30,7 +30,7 @@ alphas = [2**10, 2**4, 2**10, 2**8, 2**10, 2**2, 2**2, 2**8, 2**0, 2**8]
 Bs = [[2,2,2],[2,2,2],[2,4,4],[2,2,2],[2,4,4],[1,2,2],[1,2,2],[2,3,3],[2,3,3],[1,2,2]]   #each B is a list of #branch_nodes elements
 
 warm_start = True
-time_limit = 2 #10*60
+time_limit = 10*60
 
 columns = ['Date','Dataset','(P,n)','(P-1,P1)','D','l','C','FS','B','alpha','Warm start','Obj value','Train ACC','Test ACC','Train CM','Test CM','Train BACC','Test BACC','Time ws','Time','Total time','Gap','F','|F|','F_t','|F_t|','Vars']
 
