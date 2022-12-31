@@ -15,7 +15,7 @@ if not os.path.isdir(path + folder_plots):
 path_plots = path + folder_plots
 
 date = '' #insert the date
-datasets = ['breast_cancer_diagnostic','breast_cancer_wisconsin'] #,'climate_model','cleveland','ionosphere','parkinsons','sonar','spectf','tic_tac_toe','wholesale']
+datasets = ['breast_cancer_diagnostic','breast_cancer_wisconsin','climate_model','cleveland','ionosphere','parkinsons','sonar','spectf','tic_tac_toe','wholesale']
 
 D = 2
 l = 'l2'    #l must be in ['l1','l2']
