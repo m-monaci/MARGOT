@@ -86,7 +86,6 @@ class Margot():
         if warm_start:
              svmtree_ws = LocalSVM_H(self.D, self.C, self.FS, self.B, self.alpha)
              w_ws, b_ws, self.time_ws = svmtree_ws.train(self.l, self.x, self.y, self.M_w, time_limit_ws)
-             print(b_ws)
              w, w_p, w_m, b, xi, z, s, u = vars
 
              for t in self.Tb:
