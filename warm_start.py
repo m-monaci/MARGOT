@@ -30,7 +30,7 @@ class LocalSVM_H():
         self.M_w = M_w
 
         self.n = np.shape(x)[1]
-        time_t = time_limit/self.T
+        time_t = time_limit/len(self.Tb)
 
         x_t, y_t = [[] for t in self.Tb], [[] for t in self.Tb]
         w, b = [[] for t in self.Tb], [[] for t in self.Tb]
@@ -41,18 +41,24 @@ class LocalSVM_H():
         start = time.time()
 
         for t in self.Tb:
-            if t in self.Tb_first:
+            if len(x_t[t]) > 0 and len(np.unique(y_t[t])) > 1:
+                if t in self.Tb_first:
 
-                w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_t)
-                x_t[2 * t + 1] = x_t[t][np.dot(x_t[t], w[t]) + b[t] <= -1e-12]
-                x_t[2 * t + 2] = x_t[t][np.dot(x_t[t], w[t]) + b[t] > -1e-12]
+                    w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_t)
+                    x_t[2 * t + 1] = x_t[t][np.dot(x_t[t], w[t]) + b[t] <= -1e-12]
+                    x_t[2 * t + 2] = x_t[t][np.dot(x_t[t], w[t]) + b[t] > -1e-12]
 
-                y_t[2 * t + 1] = y_t[t][np.dot(x_t[t], w[t]) + b[t] <= -1e-12]
-                y_t[2 * t + 2] = y_t[t][np.dot(x_t[t], w[t]) + b[t] > -1e-12]
+                    y_t[2 * t + 1] = y_t[t][np.dot(x_t[t], w[t]) + b[t] <= -1e-12]
+                    y_t[2 * t + 2] = y_t[t][np.dot(x_t[t], w[t]) + b[t] > -1e-12]
 
+                else:
+
+                    w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_t)
             else:
-
-                w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_t)  # todo csi and s da importare?
+                
+                w[t] = [0.0 for _ in range(self.n)]
+                if len(np.unique(y_t[t])) == 1: b[t] = int(y_t[t][0])
+                else: b[t] = 0.0
 
         end = time.time()
         print('Time warm start:', end - start)
