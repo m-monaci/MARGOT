@@ -58,7 +58,7 @@ class LocalSVM_H():
                 
                 w[t] = [0.0 for _ in range(self.n)]
                 if len(np.unique(y_t[t])) == 1: b[t] = int(y_t[t][0])
-                else: b[t] = 0.0
+                else: b[t] = [1 if t%2 == 0 else -1][0]
 
         end = time.time()
         print('Time warm start:', end - start)
