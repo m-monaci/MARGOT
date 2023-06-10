@@ -4,8 +4,6 @@ pandas==1.4.2
 
 openpyxl==3.0.10
 
-pygraphviz==1.9
-
 gurobipy==9.5.1
 
 matplotlib==3.5.1
