@@ -20,7 +20,9 @@ The MIP model for generating MARGOT Trees is implemented in [Gurobi Optimizer](h
 
 ## Requirements
 
-The file requirements.txt reports the list of packages that must be installed to run the code. You can add a package to your environment via pip or anaconda using either pip install "package" or conda install "package".
+The file requirements.txt reports the list of packages that must be installed to run the code. You can add a package to your environment via pip or anaconda using either _pip install "package"_ or _conda install "package"_. 
+
+Then, in order to install _pygraphviz_, we reccomend to use _conda install -c conda-forge pygraphviz_.
 
 ## Configuration and running
 
