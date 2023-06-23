@@ -65,7 +65,7 @@ class Margot():
 
         S = self.sub_tree()
         Tb_last = set(self.Tb_last)
-        S_last = [list(set(S[t]).intersection(Tb_last)) for t in self.Tb]
+        S_last = [sorted(list(set(S[t]).intersection(Tb_last))) for t in self.Tb]
         Sl_last = [S_last[t][:len(S_last[t])//2] for t in self.Tb_first]
         Sr_last = [S_last[t][len(S_last[t])//2:] for t in self.Tb_first]
 
