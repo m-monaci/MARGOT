@@ -31,6 +31,7 @@ Bs = [[2,2,2],[2,2,2],[2,4,4],[2,2,2],[2,4,4],[1,2,2],[1,2,2],[2,3,3],[2,3,3],[1
 
 warm_start = True
 time_limit = 10*60
+time_limit_ws = 30
 
 columns = ['Date','Dataset','(P,n)','(P-1,P1)','D','l','C','FS','B','alpha','Warm start','Obj value','Train ACC','Test ACC','Train CM','Test CM','Train BACC','Test BACC','Time ws','Time','Total time','Gap','F','|F|','F_t','|F_t|','Vars']
 
@@ -58,7 +59,7 @@ for i in range(len(datasets)):
         print(dataset, P, n, len(y_tot[y_tot==-1]),len(y_tot[y_tot==1]))
 
         margot = Margot(D = D, C = C, FS = FS, B = B, alpha = alpha, l = l)
-        obj_value, time_ws, time_opt, mip_gap, F, cardF, F_t, cardF_t, vars_dict = margot.train(x = x, y = y, dataset = dataset, warm_start = warm_start, time_limit = time_limit)
+        obj_value, time_ws, time_opt, mip_gap, F, cardF, F_t, cardF_t, vars_dict = margot.train(x = x, y = y, dataset = dataset, warm_start = warm_start, time_limit = time_limit, time_limit_ws = time_limit_ws)
 
         if obj_value is None: continue
 
