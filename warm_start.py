@@ -90,7 +90,8 @@ class LocalSVM_H():
             b = m.addVar(vtype=GRB.CONTINUOUS, lb=-float('inf'), name='b')
             xi = m.addVars(P_t, vtype=GRB.CONTINUOUS, name='xi')
 
-            s = m.addVars(self.n, vtype=GRB.BINARY, name='s')  #1 if feature j is taken
+            if self.FS in ['H','S']:
+                s = m.addVars(self.n, vtype=GRB.BINARY, name='s')  #1 if feature j is taken
 
             if self.l == 'l2':
                 m.addConstrs(int(y[i]) * (sum(w[j] * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
