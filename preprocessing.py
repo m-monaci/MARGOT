@@ -45,7 +45,7 @@ def preprocessing_data(dataset, test_size=.25):
 
     y_new = y_new.astype(int)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y_new, test_size = test_size, shuffle = True, random_state = 0, stratify = y_new)
+    x_train, x_test, y_train, y_test = train_test_split(x, y_new, test_size = test_size, shuffle = True, random_state = 0, stratify = y)
 
     #Scaling of the data
     scaler = MinMaxScaler()
