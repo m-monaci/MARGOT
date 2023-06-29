@@ -30,7 +30,7 @@ class LocalSVM_H():
         self.M_w = M_w
 
         self.n = np.shape(x)[1]
-        time_t = time_limit/len(self.Tb)
+        time_limits = [time_limit / (2**d + 1) for d in range(self.D) for t in range(2**d)]
 
         x_t, y_t = [[] for t in self.Tb], [[] for t in self.Tb]
         w, b = [[] for t in self.Tb], [[] for t in self.Tb]
@@ -44,7 +44,7 @@ class LocalSVM_H():
             if len(x_t[t]) > 0 and len(np.unique(y_t[t])) > 1:
                 if t in self.Tb_first:
 
-                    w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_t)
+                    w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_limits[t])
                     x_t[2 * t + 1] = x_t[t][np.dot(x_t[t], w[t]) + b[t] <= -1e-12]
                     x_t[2 * t + 2] = x_t[t][np.dot(x_t[t], w[t]) + b[t] > -1e-12]
 
@@ -53,7 +53,7 @@ class LocalSVM_H():
 
                 else:
 
-                    w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_t)
+                    w[t], b[t] = self.local_fit(x_t[t], y_t[t], self.C[t], self.B[t], time_limits[t])
             else:
                 
                 w[t] = [0.0 for _ in range(self.n)]
@@ -94,16 +94,18 @@ class LocalSVM_H():
 
             if self.l == 'l2':
                 m.addConstrs(int(y[i]) * (sum(w[j] * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
-                m.addConstrs(w[j] <= self.M_w * s[j] for j in range(self.n))
-                m.addConstrs(w[j] >= - self.M_w * s[j] for j in range(self.n))
+                if self.FS in ['H','S']:
+                    m.addConstrs(w[j] <= self.M_w * s[j] for j in range(self.n))
+                    m.addConstrs(w[j] >= - self.M_w * s[j] for j in range(self.n))
             else:
                 m.addConstrs(int(y[i]) * (sum((w_p[j]-w_m[j]) * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
-                m.addConstrs(w_p[j] <= self.M_w * s[j] for j in range(self.n))
-                m.addConstrs(w_m[j] <= self.M_w * s[j] for j in range(self.n))
+                if self.FS in ['H','S']:
+                    m.addConstrs(w_p[j] <= self.M_w * s[j] for j in range(self.n))
+                    m.addConstrs(w_m[j] <= self.M_w * s[j] for j in range(self.n))
 
             if self.FS == 'H':
                 m.addConstr(sum(s[j] for j in range(self.n)) <= B)
-            else:
+            elif self.FS == 'S':
                 u = m.addVar(vtype=GRB.CONTINUOUS, name='u')
                 m.addConstr(u >= sum(s[j] for j in range(self.n)) - B)
 
