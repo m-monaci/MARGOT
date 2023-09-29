@@ -20,17 +20,22 @@ datasets = ['breast_cancer_diagnostic','breast_cancer_wisconsin','climate_model'
 D = 2
 l = 'l2'    #l must be in ['l1','l2']
 
-#each C is a list of #branch_nodes elements
-Cs = [[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,10**4,10**4,10**4],[10**(-1),10**(-1),10**(-1)],[10**(-3),10**(-1),10**(-1)],[10**(-1),10**(-1),10**(-1)],[1,1,1],[10**3,10**3,10**3]]
-C_H = [[10**3,10**3,10**3],[10**2,10**3,10**3],[10,10,10],[10**4,10**4,10**4],[10**4,10**5,10**5],[10,10**3,10**3],[10**(-4),10,10],[10**(-4),10**(-2),10**(-2)],[10**(-2),1,1],[10**(-2),10**2,10**2]]
-C_S = [[10**2,10**2,10**2],[1,1,1],[10**2,10**2,10**2],[1,1,1],[10**2,10**4,10**4],[1,1,1],[1,1,1],[10**(-4),10**2,10**2],[10**(-1),10**(-1),10**(-1)],[10**2,10**2,10**2]]
+#each C is a list of two elements: C' and C''
+# C' is the value of C_t for t in Tb'
+# C'' is the value of C_t for t in Tb''
+Cs = [[1,1],[100,100],[1,1],[0.1,0.1],[10,10],[0.1,10**4],[10**(-3),0.1],[0.1,0.1],[1,1],[10**3,10**3]]
+C_H = [[10**3,10**3],[10**2,10**3],[10,10],[10**4,10**4],[10**4,10**5],[10,10**3],[10**(-4),10],[10**(-4),10**(-2)],[10**(-2),1],[10**(-2),10**2]]
+C_S = [[100,100],[1,1],[100,100],[1,1],[1,1],[100,10**4],[1,1],[10**(-4),10**2],[1,1],[10**(-2),1]]
 
-FSs = [None,'H','S']                                                                     #FS must be in [None, 'H', 'S']
-alphas = [2**10, 2**4, 2**10, 2**8, 2**10, 2**2, 2**2, 2**8, 2**0, 2**8]
-Bs = [[2,2,2],[2,2,2],[2,4,4],[2,2,2],[2,4,4],[1,2,2],[1,2,2],[2,3,3],[2,3,3],[1,2,2]]   #each B is a list of #branch_nodes elements
+FSs = [None,'H','S']    #FS must be in [None, 'H', 'S']
+alphas = [2**10, 2**4, 2**10, 2**2, 2**8, 2**10, 2**2, 2**8, 2**0, 2**2]
+# each B is a list of two elements B' and B'':
+# B' is the value of B_t for t in Tb'
+# B'' is the value of B_t for t in Tb''
+Bs = [[2,2],[2,3],[3,3],[1,2],[2,3],[1,2],[1,2],[2,3],[2,3],[1,2]]
 
 warm_start = True
-time_limit = 10*60
+time_limit = 2 #10*60
 time_limit_ws = 30
 
 columns = ['Date','Dataset','(P,n)','(P-1,P1)','D','l','C','FS','B','alpha','Warm start','Obj value','Train ACC','Test ACC','Train CM','Test CM','Train BACC','Test BACC','Time ws','Time','Total time','Gap','F','|F|','F_t','|F_t|','Vars']
@@ -43,12 +48,18 @@ except:
 for i in range(len(datasets)):
     dataset = datasets[i]
     for FS in FSs:
-        if FS == 'H': C = C_H[i]
-        elif FS == 'S': C = C_S[i]
-        else: C = Cs[i]
-
-        alpha = alphas[i]
-        B = Bs[i]
+        if FS == 'H':
+            C = C_H[i]
+            B = Bs[i]
+            alpha = None
+        elif FS == 'S':
+            C = C_S[i]
+            B = [1,1]
+            alpha = alphas[i]
+        else:
+            C = Cs[i]
+            B = None
+            alpha = None
 
         x, x_test, y, y_test = preprocessing_data(dataset, 0.20)
 
