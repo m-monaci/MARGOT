@@ -30,7 +30,8 @@ class LocalSVM_H():
         self.M_w = M_w
 
         self.n = np.shape(x)[1]
-        time_limits = [time_limit / (2**d + 1) for d in range(self.D) for t in range(2**d)]
+        time_limits = [time_limit / len(self.Tb) for t in self.Tb]
+        #time_limits = [time_limit / (2**d + 1) for d in range(self.D) for t in range(2**d)]
 
         x_t, y_t = [[] for t in self.Tb], [[] for t in self.Tb]
         w, b = [[] for t in self.Tb], [[] for t in self.Tb]
