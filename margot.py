@@ -22,11 +22,9 @@ class Margot():
     def __init__(self, D = 2, C = 1.0, FS = None, B = None, alpha = None, l = 'l2'):
 
         self.D = D
-        self.C = C                                      #C is a list of #branch_nodes elements
-        self.FS = FS                                    #FS must be in [None, 'H', 'S']
-        self.B = B                                      #B is a list of #branch_nodes elements
+        self.FS = FS                                                                  # FS must be in [None, 'H', 'S']
         self.alpha = alpha
-        self.l = l                                      #'l1' or 'l2'
+        self.l = l                                                                    # 'l1' or 'l2'
 
         self.T = self.find_T(D)
         floorTb = (floor(self.T / 2))
@@ -36,6 +34,10 @@ class Margot():
         self.Tb_last = self.Tb[self.find_T(D-2):]
         self.parents = [-1]+[int(i) for i in np.arange(0,self.find_T(D-1), 0.5)]
         self.S_last, self.Sl_last, self.Sr_last = self.sub_nodes()
+
+        self.C = [C[0] for _ in self.Tb_first] + [C[1] for _ in self.Tb_last]         # C is a list of #branch_nodes elements
+        if B is None: self.B = [B for _ in self.Tb]
+        else: self.B = [B[0] for _ in self.Tb_first] + [B[1] for _ in self.Tb_last]   # B is a list of #branch_nodes elements
 
     def find_T(self, D):
         return pow(2, (D + 1)) - 1
