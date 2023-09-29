@@ -69,71 +69,61 @@ class LocalSVM_H():
     def local_fit(self, x, y, C, B, time_limit_t):
 
         P_t = len(x)
+        m = gp.Model()
 
-        if self.FS is None and self.l == 'l2':
-
-            svc = SVC(C=C, kernel='linear')
-            svc.fit(np.asarray(x), (np.asarray(y)).reshape(-1, ))
-            w_t = list(svc.coef_[0])
-            b_t = svc.intercept_[0]
-
+        #vars and constraints
+        if self.l == 'l2':
+            w = m.addVars(self.n, vtype=GRB.CONTINUOUS, lb=-float('inf'), name='w')
         else:
+            w_p = m.addVars(self.n, vtype=GRB.CONTINUOUS, lb=0, name='w_p')
+            w_m = m.addVars(self.n, vtype=GRB.CONTINUOUS, lb=0, name='w_m')
 
-            m = gp.Model()
+        b = m.addVar(vtype=GRB.CONTINUOUS, lb=-float('inf'), name='b')
+        xi = m.addVars(P_t, vtype=GRB.CONTINUOUS, name='xi')
 
-            #vars and constraints
-            if self.l == 'l2':
-                w = m.addVars(self.n, vtype=GRB.CONTINUOUS, lb=-float('inf'), name='w')
-            else:
-                w_p = m.addVars(self.n, vtype=GRB.CONTINUOUS, lb=0, name='w_p')
-                w_m = m.addVars(self.n, vtype=GRB.CONTINUOUS, lb=0, name='w_m')
+        if self.FS in ['H','S']:
+            s = m.addVars(self.n, vtype=GRB.BINARY, name='s')  #1 if feature j is taken
 
-            b = m.addVar(vtype=GRB.CONTINUOUS, lb=-float('inf'), name='b')
-            xi = m.addVars(P_t, vtype=GRB.CONTINUOUS, name='xi')
-
+        if self.l == 'l2':
+            m.addConstrs(int(y[i]) * (sum(w[j] * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
             if self.FS in ['H','S']:
-                s = m.addVars(self.n, vtype=GRB.BINARY, name='s')  #1 if feature j is taken
+                m.addConstrs(w[j] <= self.M_w * s[j] for j in range(self.n))
+                m.addConstrs(w[j] >= - self.M_w * s[j] for j in range(self.n))
+        else:
+            m.addConstrs(int(y[i]) * (sum((w_p[j]-w_m[j]) * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
+            if self.FS in ['H','S']:
+                m.addConstrs(w_p[j] <= self.M_w * s[j] for j in range(self.n))
+                m.addConstrs(w_m[j] <= self.M_w * s[j] for j in range(self.n))
 
+        if self.FS == 'H':
+            m.addConstr(sum(s[j] for j in range(self.n)) <= B)
+        elif self.FS == 'S':
+            u = m.addVar(vtype=GRB.CONTINUOUS, name='u')
+            m.addConstr(u >= sum(s[j] for j in range(self.n)) - B)
+
+        #objective function
+        if self.FS == 'S':
             if self.l == 'l2':
-                m.addConstrs(int(y[i]) * (sum(w[j] * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
-                if self.FS in ['H','S']:
-                    m.addConstrs(w[j] <= self.M_w * s[j] for j in range(self.n))
-                    m.addConstrs(w[j] >= - self.M_w * s[j] for j in range(self.n))
+                m.setObjective(0.5 * sum(w[j] ** 2 for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))) + self.alpha * u, sense=GRB.MINIMIZE)
             else:
-                m.addConstrs(int(y[i]) * (sum((w_p[j]-w_m[j]) * x[i, j] for j in range(self.n)) + b) >= 1 - xi[i] for i in range(len(x)))
-                if self.FS in ['H','S']:
-                    m.addConstrs(w_p[j] <= self.M_w * s[j] for j in range(self.n))
-                    m.addConstrs(w_m[j] <= self.M_w * s[j] for j in range(self.n))
-
-            if self.FS == 'H':
-                m.addConstr(sum(s[j] for j in range(self.n)) <= B)
-            elif self.FS == 'S':
-                u = m.addVar(vtype=GRB.CONTINUOUS, name='u')
-                m.addConstr(u >= sum(s[j] for j in range(self.n)) - B)
-
-            #objective function
-            if self.FS == 'S':
-                if self.l == 'l2':
-                    m.setObjective(0.5 * sum(w[j] ** 2 for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))) + self.alpha * u, sense=GRB.MINIMIZE)
-                else:
-                    m.setObjective(0.5 * sum(w_p[j]+w_m[j] for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))) + self.alpha * u, sense=GRB.MINIMIZE)
-            else:
-                if self.l == 'l2':
-                    m.setObjective(0.5 * sum(w[j] ** 2 for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))), sense=GRB.MINIMIZE)
-                else:
-                    m.setObjective(0.5 * sum(w_p[j]+w_m[j] for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))), sense=GRB.MINIMIZE)
-
-            #solve
-            m.Params.TimeLimit = time_limit_t
-            m.Params.LogToConsole = False
-            m.optimize()
-
-            #retrieve solution
+                m.setObjective(0.5 * sum(w_p[j]+w_m[j] for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))) + self.alpha * u, sense=GRB.MINIMIZE)
+        else:
             if self.l == 'l2':
-                w_t = [m.getVarByName('w[%d]' % j).x for j in range(self.n)]
+                m.setObjective(0.5 * sum(w[j] ** 2 for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))), sense=GRB.MINIMIZE)
             else:
-                w_t = [m.getVarByName('w_p[%d]' % j).x - m.getVarByName('w_m[%d]' % j).x for j in range(self.n)]
+                m.setObjective(0.5 * sum(w_p[j]+w_m[j] for j in range(self.n)) + C * sum(xi[i] for i in range(len(x))), sense=GRB.MINIMIZE)
 
-            b_t = m.getVarByName('b').x
+        #solve
+        m.Params.TimeLimit = time_limit_t
+        m.Params.LogToConsole = False
+        m.optimize()
+
+        #retrieve solution
+        if self.l == 'l2':
+            w_t = [m.getVarByName('w[%d]' % j).x for j in range(self.n)]
+        else:
+            w_t = [m.getVarByName('w_p[%d]' % j).x - m.getVarByName('w_m[%d]' % j).x for j in range(self.n)]
+
+        b_t = m.getVarByName('b').x
 
         return w_t, b_t
