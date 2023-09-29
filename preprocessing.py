@@ -17,8 +17,7 @@ def preprocessing_data(dataset, test_size=.25):
         df = df[df.apply(lambda col: col != str('?'))]
 
     df.dropna(axis = 0, inplace = True)
-    df.drop_duplicates(inplace = True)
-
+    
     y = df[df.columns[-1]]
     x = df[df.columns[:-1]]
 
