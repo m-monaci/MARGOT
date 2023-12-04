@@ -4,13 +4,16 @@ This repository contains the source code and the data related to the paper [Marg
 by Federico D'Onofrio, Giorgio Grani, Marta Monaci and Laura Palagi.
 
 ```
-@misc{https://doi.org/10.48550/arxiv.2210.10567,
-  doi = {10.48550/ARXIV.2210.10567},
-  url = {https://arxiv.org/abs/2210.10567},
-  author = {D'Onofrio, Federico and Grani, Giorgio and Monaci, Marta and Palagi, Laura},
-  title = {Margin Optimal Classification Trees},
-  publisher = {arXiv},
-  year = {2022}
+@article{DONOFRIO2024106441,
+title = {Margin optimal classification trees},
+journal = {Computers & Operations Research},
+volume = {161},
+pages = {106441},
+year = {2024},
+issn = {0305-0548},
+doi = {https://doi.org/10.1016/j.cor.2023.106441},
+url = {https://www.sciencedirect.com/science/article/pii/S0305054823003052},
+author = {Federico D’Onofrio and Giorgio Grani and Marta Monaci and Laura Palagi}
 }
 ```
 
