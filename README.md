@@ -1,10 +1,10 @@
 # MARGOT
 
-This repository contains the source code and the data related to the paper [Margin Optimal Classification Trees](https://arxiv.org/abs/2210.10567)
+This repository contains the source code and the data related to the paper [Margin Optimal Classification Trees](https://doi.org/10.1016/j.cor.2023.106441)
 by Federico D'Onofrio, Giorgio Grani, Marta Monaci and Laura Palagi.
 
 ```
-@article{DONOFRIO2024106441,
+@article{donofrio2024margin,
 title = {Margin optimal classification trees},
 journal = {Computers & Operations Research},
 volume = {161},
@@ -12,7 +12,6 @@ pages = {106441},
 year = {2024},
 issn = {0305-0548},
 doi = {https://doi.org/10.1016/j.cor.2023.106441},
-url = {https://www.sciencedirect.com/science/article/pii/S0305054823003052},
 author = {Federico D’Onofrio and Giorgio Grani and Marta Monaci and Laura Palagi}
 }
 ```
