@@ -47,7 +47,9 @@ Contributors to this code:
 
 # License
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+The software is for academic purposes only, see also the file LICENSE provided. 
 
-* [MIT License](https://opensource.org/licenses/mit-license.php)
-* Copyright 2022 © Marta Monaci, Federico D'Onofrio
+ <!--  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) -->
+
+<!--  * [MIT License](https://opensource.org/licenses/mit-license.php) -->
+<!--  * Copyright 2022 © Marta Monaci, Federico D'Onofrio -->
